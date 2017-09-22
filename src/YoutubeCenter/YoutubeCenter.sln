@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeCenter", "YoutubeCenter\YoutubeCenter.csproj", "{224EC90D-2D9D-46F9-A3CA-E2BF7323B0F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeCenter.Library", "YoutubeCenter.Library\YoutubeCenter.Library.csproj", "{75B015B6-2751-4FAC-B239-FB515559C934}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{224EC90D-2D9D-46F9-A3CA-E2BF7323B0F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{224EC90D-2D9D-46F9-A3CA-E2BF7323B0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{224EC90D-2D9D-46F9-A3CA-E2BF7323B0F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B015B6-2751-4FAC-B239-FB515559C934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B015B6-2751-4FAC-B239-FB515559C934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B015B6-2751-4FAC-B239-FB515559C934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B015B6-2751-4FAC-B239-FB515559C934}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

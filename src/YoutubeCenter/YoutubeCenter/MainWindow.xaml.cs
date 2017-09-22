@@ -24,5 +24,10 @@ namespace YoutubeCenter
         {
             InitializeComponent();
         }
+
+        private void NavListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
