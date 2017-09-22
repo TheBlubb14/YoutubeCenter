@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messaging\Notifications.cs" />
     <Compile Include="Mockup.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\Settings.cs" />

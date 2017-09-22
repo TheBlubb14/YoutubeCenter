@@ -1,7 +1,9 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using YoutubeCenter.Library;
 using YoutubeCenter.Library.Model;
@@ -20,7 +22,16 @@ namespace YoutubeCenter.ViewModel
         public ObservableCollection<Channel> Channels { get; private set; }
 
         public ICommand LoadChannelsCommand { get; private set; }
+
+        #region Event Commands
         public ICommand NavListBoxSelectionChangedCommand { get; private set; }
+        public ICommand KeyDownCommand { get; private set; }
+        #endregion
+
+        #region MenuItem Commands
+        public ICommand MenuItemExitCommand { get; private set; }
+        public ICommand MenuItemSettingsCommand { get; private set; }
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -35,7 +46,19 @@ namespace YoutubeCenter.ViewModel
             {
                 LoadChannelsCommand = new RelayCommand(LoadChannels);
                 NavListBoxSelectionChangedCommand = new RelayCommand(NavListBoxSelectionChanged);
+                MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
+                KeyDownCommand = new RelayCommand(KeyDown);
             }
+        }
+
+        private void KeyDown()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Exit()
+        {
+            Environment.Exit(0);
         }
 
         public void NavListBoxSelectionChanged()

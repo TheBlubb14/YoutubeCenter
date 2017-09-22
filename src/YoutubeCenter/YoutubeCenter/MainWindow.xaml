@@ -19,6 +19,11 @@
         DataContext="{Binding Main, Source={StaticResource Locator}}">
     
     <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="KeyDown">
+                <Custom:EventToCommand Command="{Binding KeyDownCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="212">
@@ -48,6 +53,11 @@
                         <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                             <StackPanel>
                                 <!--Options Buttons-->
+                                <MenuItem Header="Exit" InputGestureText="Ctrl+E" Command="{Binding MenuItemExitCommand}">
+                                    <MenuItem.Icon>
+                                        <materialDesign:PackIcon Kind="ExitToApp" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </StackPanel>
                         </materialDesign:PopupBox>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="YoutubeCenter" >
