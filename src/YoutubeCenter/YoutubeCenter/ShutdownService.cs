@@ -16,7 +16,7 @@ namespace YoutubeCenter
             var shouldAbortShutdown = false;
 
             Messenger.Default.Send(new NotificationMessageAction<bool>(
-                Notifications.ConfirmShutdown,
+                Notifications.ConfirmShutdown, null,
                 shouldAbort => shouldAbortShutdown |= shouldAbort));
 
             if (!shouldAbortShutdown)

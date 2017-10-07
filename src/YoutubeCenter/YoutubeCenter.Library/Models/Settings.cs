@@ -9,5 +9,19 @@ namespace YoutubeCenter.Library.Model
 {
     public class Settings : ObservableObject
     {
+        public Settings()
+        {
+            this.YoutubeApiKey = "";
+            this.DownloadPath = "";
+        }
+
+        public Settings(string YoutubeApiKey, string DownloadPath)
+        {
+            this.YoutubeApiKey = YoutubeApiKey;
+            this.DownloadPath = DownloadPath;
+        }
+
+        public string YoutubeApiKey { get; set; }
+        public string DownloadPath { get; set; }
     }
 }

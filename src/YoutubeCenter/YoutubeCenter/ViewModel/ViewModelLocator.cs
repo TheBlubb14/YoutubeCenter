@@ -1,6 +1,9 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Practices.ServiceLocation;
+using YoutubeCenter.Library.Messaging;
 
 namespace YoutubeCenter.ViewModel
 {
@@ -27,9 +30,11 @@ namespace YoutubeCenter.ViewModel
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<SettingsViewModel>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public SettingsViewModel Settings => ServiceLocator.Current.GetInstance<SettingsViewModel>();
 
         public static void Cleanup()
         {

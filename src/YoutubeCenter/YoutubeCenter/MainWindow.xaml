@@ -16,57 +16,64 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Height="350" Width="525"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
-    <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
-        <i:Interaction.Triggers>
-            <i:EventTrigger EventName="KeyDown">
-                <Custom:EventToCommand Command="{Binding KeyDownCommand}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>
-        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-            <materialDesign:DrawerHost.LeftDrawerContent>
-                <DockPanel MinWidth="212">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+        DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="KeyDown">
+            <Custom:EventToCommand Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <DockPanel MinWidth="212">
+                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                    <ListBox x:Name="NavListBox" Margin="0 16 0 16" SelectedIndex="0"                         
+                <ListBox x:Name="NavListBox" Margin="0 16 0 16" SelectedIndex="0"                         
                              ItemsSource="{Binding Channels}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="domain:Channel">
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}" PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="domain:Channel">
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
+        <DockPanel>
+            <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" DockPanel.Dock="Top">
+                <DockPanel>
+                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False" x:Name="MenuToggleButton"/>
+                    <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                        <StackPanel>
+                            <!--Options Buttons-->
+                            <MenuItem Header="Settings" InputGestureText="Ctrl+X" Command="{Binding MenuItemSettingsCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Settings" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Exit" InputGestureText="Ctrl+E" Command="{Binding MenuItemExitCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="ExitToApp" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="YoutubeCenter" >
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding LoadChannelsCommand}"/>
+                        </TextBlock.InputBindings>
+                    </TextBlock>
                 </DockPanel>
-            </materialDesign:DrawerHost.LeftDrawerContent>
-            <DockPanel>
-                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" DockPanel.Dock="Top">
-                    <DockPanel>
-                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False" x:Name="MenuToggleButton"/>
-                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                            <StackPanel>
-                                <!--Options Buttons-->
-                                <MenuItem Header="Exit" InputGestureText="Ctrl+E" Command="{Binding MenuItemExitCommand}">
-                                    <MenuItem.Icon>
-                                        <materialDesign:PackIcon Kind="ExitToApp" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </StackPanel>
-                        </materialDesign:PopupBox>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="YoutubeCenter" >
-                            <TextBlock.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding LoadChannelsCommand}"/>
-                            </TextBlock.InputBindings>
-                        </TextBlock>
-                    </DockPanel>
-                </materialDesign:ColorZone>
+            </materialDesign:ColorZone>
+            <materialDesign:DialogHost Identifier="RootDialog">
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -77,7 +84,7 @@
                     </ScrollViewer>
                     <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar" Grid.Row="1" />
                 </Grid>
-            </DockPanel>
-        </materialDesign:DrawerHost>
-    </materialDesign:DialogHost>
+            </materialDesign:DialogHost>
+        </DockPanel>
+    </materialDesign:DrawerHost>
 </Window>

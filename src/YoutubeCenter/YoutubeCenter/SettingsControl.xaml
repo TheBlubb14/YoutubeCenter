@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="YoutubeCenter.SettingsControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YoutubeCenter"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Custom="http://www.galasoft.ch/mvvmlight"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Height="350" Width="525"
+        DataContext="{Binding Settings, Source={StaticResource Locator}}" >
+    <StackPanel  >
+        <Grid Margin="16" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!--Content-->
+            <TextBox Text="{Binding Settings.DownloadPath, Mode=TwoWay}" Name="TextBoxDownloadPath" Grid.Column="0" Grid.Row="0" Margin="0 0 0 8" wpf:HintAssist.Hint="Download Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <Button Grid.Column="1" Grid.Row="0" Margin="8 0 0 0" HorizontalAlignment="Right" Content="..." Command="{Binding BrowseFolderCommand}"/>
+
+            <TextBox Text="{Binding Settings.YoutubeApiKey, Mode=TwoWay}" Grid.Column="0" Grid.Row="1" Margin="0 0 0 8" wpf:HintAssist.Hint="YoutubeAPI Key" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        </Grid>
+
+        <StackPanel Margin="8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
+            <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}" CommandParameter="1" Style="{DynamicResource MaterialDesignFlatButton}" Content="OK"/>
+            <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}" CommandParameter="0" Style="{DynamicResource MaterialDesignFlatButton}" Content="CANCEL"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

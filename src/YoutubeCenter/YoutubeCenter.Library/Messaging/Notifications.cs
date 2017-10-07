@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace YoutubeCenter.Library.Messaging
 {
-    public static class Notifications
+    public enum Notifications
     {
-        public static readonly string ConfirmShutdown = Guid.NewGuid().ToString();
-
-        public static readonly string NotifyShutdown = Guid.NewGuid().ToString();
+        ConfirmShutdown,
+        NotifyShutdown,
+        SnackbarMessage
     }
 }

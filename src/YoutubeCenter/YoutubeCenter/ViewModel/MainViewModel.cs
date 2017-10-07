@@ -1,11 +1,14 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using YoutubeCenter.Library;
+using YoutubeCenter.Library.Messaging;
 using YoutubeCenter.Library.Model;
 
 namespace YoutubeCenter.ViewModel
@@ -13,7 +16,7 @@ namespace YoutubeCenter.ViewModel
     /// <summary>
     /// This class contains properties that the main View can data bind to.
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IDisposable
     {
         public Settings Settings { get; set; }
 
@@ -46,15 +49,37 @@ namespace YoutubeCenter.ViewModel
             {
                 LoadChannelsCommand = new RelayCommand(LoadChannels);
                 NavListBoxSelectionChangedCommand = new RelayCommand(NavListBoxSelectionChanged);
+                MenuItemSettingsCommand = new RelayCommand(OpenSettings);
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
-                KeyDownCommand = new RelayCommand(KeyDown);
+                KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
+                Settings = SettingsHelper.Load();
             }
         }
 
-        private void KeyDown()
+        private void OpenSettings()
         {
-            throw new NotImplementedException();
+            using (var model = SimpleIoc.Default.GetInstance<SettingsViewModel>())
+            using (var settings = new SettingsControl() { DataContext = model })
+            {
+                model.Settings = Settings;
+                DialogHost.Show(settings, new DialogClosingEventHandler((obj, args) =>
+                {
+                    if (args.Parameter.ToString() == "1")
+                        SettingsHelper.Safe(model.Settings);
+                }));
+                Settings = model.Settings;
+            }
         }
+
+        private void KeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.E && IsControl)
+                MenuItemExitCommand.Execute(null);
+            else if (e.Key == Key.X && IsControl)
+                MenuItemSettingsCommand.Execute(null);
+        }
+
+        private bool IsControl => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
 
         public void Exit()
         {
@@ -70,6 +95,11 @@ namespace YoutubeCenter.ViewModel
         {
             Channels = Mockup.GetDummyChannels();
             // youtube api load channels
+        }
+
+        public void Dispose()
+        {
+            Messenger.Default.Unregister<MessageBase>(this);
         }
     }
 }

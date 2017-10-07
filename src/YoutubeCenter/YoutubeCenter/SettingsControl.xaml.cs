@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace YoutubeCenter
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für SettingsWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisposable
+    public partial class SettingsControl : UserControl, IDisposable
     {
-        public MainWindow()
+        public SettingsControl()
         {
             InitializeComponent();
         }
