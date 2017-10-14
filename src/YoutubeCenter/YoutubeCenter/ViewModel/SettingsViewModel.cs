@@ -21,7 +21,8 @@ namespace YoutubeCenter.ViewModel
 {
     public class SettingsViewModel : ViewModelBase, IDisposable
     {
-        public ICommand BrowseFolderCommand { get; set; }
+        public ICommand DatabaseBrowseFileCommand { get; set; }
+        public ICommand DownloadPathBrowseFolderCommand { get; set; }
 
         public Settings Settings { get; set; }
 
@@ -32,7 +33,8 @@ namespace YoutubeCenter.ViewModel
             }
             else
             {
-                BrowseFolderCommand = new RelayCommand(BrowseFolder);
+                DownloadPathBrowseFolderCommand = new RelayCommand(DownloadPathBrowseFolder);
+                DatabaseBrowseFileCommand = new RelayCommand(DatabaseBrowseFile);
 
                 Messenger.Default.Register<MessageBase>(this, x =>
                 {
@@ -42,9 +44,29 @@ namespace YoutubeCenter.ViewModel
             }
         }
 
-        private void BrowseFolder()
+        private void DatabaseBrowseFile()
+        {
+            var dialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                AutoUpgradeEnabled = true,
+                DefaultExt = ".sqlite",
+                FileName = "YoutubeCenterData.sqlite",
+                Filter = "sqlite|*.sqlite|all files|*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
+
+            var result = dialog.ShowDialog(System.Windows.Application.Current.MainWindow.GetIWin32Window());
+
+            if (result == DialogResult.OK)
+                Settings.DatabaseLocation = dialog.FileName;
+        }
+
+        private void DownloadPathBrowseFolder()
         {
             var dialog = new FolderBrowserDialog();
+            dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+
             var result = dialog.ShowDialog(System.Windows.Application.Current.MainWindow.GetIWin32Window());
 
             if (result == DialogResult.OK)

@@ -5,9 +5,11 @@ using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using YoutubeCenter.Library;
+using YoutubeCenter.Library.Database;
 using YoutubeCenter.Library.Messaging;
 using YoutubeCenter.Library.Model;
 
@@ -24,7 +26,8 @@ namespace YoutubeCenter.ViewModel
 
         public ObservableCollection<Channel> Channels { get; private set; }
 
-        public ICommand LoadChannelsCommand { get; private set; }
+        private Database Database;
+        private YoutubeApi YoutubeApi;
 
         #region Event Commands
         public ICommand NavListBoxSelectionChangedCommand { get; private set; }
@@ -43,17 +46,31 @@ namespace YoutubeCenter.ViewModel
         {
             if (IsInDesignMode)
             {
-                Channels = Mockup.GetDummyChannels();
+                //Channels = Mockup.GetDummyChannels();
             }
             else
             {
-                LoadChannelsCommand = new RelayCommand(LoadChannels);
                 NavListBoxSelectionChangedCommand = new RelayCommand(NavListBoxSelectionChanged);
                 MenuItemSettingsCommand = new RelayCommand(OpenSettings);
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
+
                 Settings = SettingsHelper.Load();
+                Database = new Database(Settings);
+
+                Channels = new ObservableCollection<Channel>();
+                YoutubeApi = new YoutubeApi(Settings.YoutubeApiKey);
+                LoadChannels();
             }
+        }
+
+        private async void LoadChannels()
+        {
+            // Aus datenbank laden
+            var channels = await YoutubeApi.GetChannelsByName("Ethoslab", "docm77");
+
+            foreach (var item in channels)
+                Channels.Add(item);
         }
 
         private void OpenSettings()
@@ -65,9 +82,11 @@ namespace YoutubeCenter.ViewModel
                 DialogHost.Show(settings, new DialogClosingEventHandler((obj, args) =>
                 {
                     if (args.Parameter.ToString() == "1")
+                    {
                         SettingsHelper.Safe(model.Settings);
+                        Settings = model.Settings;
+                    }
                 }));
-                Settings = model.Settings;
             }
         }
 
@@ -89,12 +108,7 @@ namespace YoutubeCenter.ViewModel
         public void NavListBoxSelectionChanged()
         {
             // Load Channel?
-        }
-
-        public void LoadChannels()
-        {
-            Channels = Mockup.GetDummyChannels();
-            // youtube api load channels
+            var a = SelectedChannel;
         }
 
         public void Dispose()

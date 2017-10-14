@@ -13,15 +13,18 @@ namespace YoutubeCenter.Library.Model
         {
             this.YoutubeApiKey = "";
             this.DownloadPath = "";
+            this.DatabaseLocation = "";
         }
 
-        public Settings(string YoutubeApiKey, string DownloadPath)
+        public Settings(string YoutubeApiKey, string DownloadPath, string DatabaseLocation)
         {
             this.YoutubeApiKey = YoutubeApiKey;
             this.DownloadPath = DownloadPath;
+            this.DatabaseLocation = DatabaseLocation;
         }
 
         public string YoutubeApiKey { get; set; }
         public string DownloadPath { get; set; }
+        public string DatabaseLocation { get; set; }
     }
 }

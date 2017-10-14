@@ -32,7 +32,8 @@
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                 <ListBox x:Name="NavListBox" Margin="0 16 0 16" SelectedIndex="0"                         
-                             ItemsSource="{Binding Channels}">
+                             ItemsSource="{Binding Channels}"
+                             SelectedItem="{Binding SelectedChannel}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}" PassEventArgsToCommand="True"/>
@@ -67,7 +68,8 @@
                     </materialDesign:PopupBox>
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="YoutubeCenter" >
                         <TextBlock.InputBindings>
-                            <MouseBinding MouseAction="LeftClick" Command="{Binding LoadChannelsCommand}"/>
+                            <!--Command Binding navigate to "Home"-->
+                            <MouseBinding MouseAction="LeftClick"/>
                         </TextBlock.InputBindings>
                     </TextBlock>
                 </DockPanel>

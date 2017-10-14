@@ -18,26 +18,30 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Height="350" Width="525"
         DataContext="{Binding Settings, Source={StaticResource Locator}}" >
-    <StackPanel  >
-        <Grid Margin="16" VerticalAlignment="Top">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Margin="16" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <!--Content-->
-            <TextBox Text="{Binding Settings.DownloadPath, Mode=TwoWay}" Name="TextBoxDownloadPath" Grid.Column="0" Grid.Row="0" Margin="0 0 0 8" wpf:HintAssist.Hint="Download Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-            <Button Grid.Column="1" Grid.Row="0" Margin="8 0 0 0" HorizontalAlignment="Right" Content="..." Command="{Binding BrowseFolderCommand}"/>
+            <TextBox Text="{Binding Settings.DownloadPath, Mode=TwoWay}" Grid.Column="0" Grid.Row="0" Margin="0 0 0 8" wpf:HintAssist.Hint="Download Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <Button Grid.Column="1" Grid.Row="0" Margin="8 0 0 0" HorizontalAlignment="Right" Content="..." Command="{Binding DownloadPathBrowseFolderCommand}"/>
 
-            <TextBox Text="{Binding Settings.YoutubeApiKey, Mode=TwoWay}" Grid.Column="0" Grid.Row="1" Margin="0 0 0 8" wpf:HintAssist.Hint="YoutubeAPI Key" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+            <TextBox Text="{Binding Settings.DatabaseLocation, Mode=TwoWay}" Grid.Column="0" Grid.Row="1" Margin="0 0 0 8" wpf:HintAssist.Hint="Database Location" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <Button Grid.Column="1" Grid.Row="1" Margin="8 0 0 0" HorizontalAlignment="Right" Content="..." Command="{Binding DatabaseBrowseFileCommand}"/>
+
+            <TextBox Text="{Binding Settings.YoutubeApiKey, Mode=TwoWay}" Grid.Column="0" Grid.Row="2" Margin="0 0 0 8" wpf:HintAssist.Hint="YoutubeAPI Key" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
         </Grid>
 
-        <StackPanel Margin="8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Bottom" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
             <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}" CommandParameter="1" Style="{DynamicResource MaterialDesignFlatButton}" Content="OK"/>
             <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}" CommandParameter="0" Style="{DynamicResource MaterialDesignFlatButton}" Content="CANCEL"/>
         </StackPanel>
-    </StackPanel>
+    </DockPanel>
 </UserControl>
