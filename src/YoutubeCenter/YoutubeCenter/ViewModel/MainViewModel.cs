@@ -4,8 +4,11 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using YoutubeCenter.Library;
@@ -20,13 +23,10 @@ namespace YoutubeCenter.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase, IDisposable
     {
-        public Settings Settings { get; set; }
-
         public Channel SelectedChannel { get; set; }
 
         public ObservableCollection<Channel> Channels { get; private set; }
 
-        private Database Database;
         private YoutubeApi YoutubeApi;
 
         #region Event Commands
@@ -55,36 +55,48 @@ namespace YoutubeCenter.ViewModel
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
 
-                Settings = SettingsHelper.Load();
-                Database = new Database(Settings);
-
                 Channels = new ObservableCollection<Channel>();
-                YoutubeApi = new YoutubeApi(Settings.YoutubeApiKey);
+                YoutubeApi = new YoutubeApi(Settings.Instance.YoutubeApiKey);
                 LoadChannels();
             }
         }
 
-        private async void LoadChannels()
+        private void LoadChannels()
         {
-            // Aus datenbank laden
-            var channels = await YoutubeApi.GetChannelsByName("Ethoslab", "docm77");
+            //result.Add(await YoutubeApi.GetChannelByNameAsync(channelNames[0]));
+            //Database.Instance.SaveChannels(result);
 
-            foreach (var item in channels)
+
+            AddChannels(null);
+            //var channels = await YoutubeApi.GetChannelsByName(Database.Instance.GetChannels().First().Name);
+
+            foreach (var item in Database.Instance.GetChannels())
                 Channels.Add(item);
         }
 
-        private void OpenSettings()
+        private async void AddChannels(List<string> names)
+        {
+            names = new List<string>();
+            names.Add("docm77");
+            names.Add("ethoslab");
+            names.Add("summonersinn");
+            names.Add("letsreadsmallbooks");
+
+            var channels = await YoutubeApi.GetChannelsByNameAsync(names.ToArray());
+            Database.Instance.SaveChannelsAsync(channels);
+        }
+
+        private async void OpenSettings()
         {
             using (var model = SimpleIoc.Default.GetInstance<SettingsViewModel>())
             using (var settings = new SettingsControl() { DataContext = model })
             {
-                model.Settings = Settings;
-                DialogHost.Show(settings, new DialogClosingEventHandler((obj, args) =>
+                await DialogHost.Show(settings, new DialogClosingEventHandler((obj, args) =>
                 {
                     if (args.Parameter.ToString() == "1")
                     {
-                        SettingsHelper.Safe(model.Settings);
-                        Settings = model.Settings;
+                        Settings.Instance = model.Settings;
+                        Settings.Safe();
                     }
                 }));
             }
@@ -99,11 +111,6 @@ namespace YoutubeCenter.ViewModel
         }
 
         private bool IsControl => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
-
-        public void Exit()
-        {
-            Environment.Exit(0);
-        }
 
         public void NavListBoxSelectionChanged()
         {

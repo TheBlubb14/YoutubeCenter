@@ -17,7 +17,14 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Height="350" Width="525"
-        DataContext="{Binding Settings, Source={StaticResource Locator}}" >
+        DataContext="{Binding Settings, Source={StaticResource Locator}}">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <Custom:EventToCommand Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <DockPanel>
         <Grid DockPanel.Dock="Top" Margin="16" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>

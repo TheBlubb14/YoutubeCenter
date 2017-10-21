@@ -26,7 +26,7 @@ namespace YoutubeCenter.Library
             });
         }
 
-        public async Task<IList<Model.Channel>> GetChannelsByName(params string[] Names)
+        public async Task<ICollection<Model.Channel>> GetChannelsByNameAsync(params string[] Names)
         {
             var result = new List<Model.Channel>();
             foreach (var name in Names)
@@ -37,7 +37,7 @@ namespace YoutubeCenter.Library
 
         public async Task<Model.Channel> GetChannelByNameAsync(string Name)
         {
-            var search = _service.Channels.List("brandingSettings,snippet");
+            var search = _service.Channels.List("snippet");
             search.ForUsername = Name;
 
             var result = await search.ExecuteAsync().ConfigureAwait(false);
@@ -51,9 +51,8 @@ namespace YoutubeCenter.Library
             {
                 Id = item?.Id,
                 Title = item?.Snippet?.Title,
-                Name = Name,
                 Description = item?.Snippet?.Description,
-                BackgroundImageUrl = item?.BrandingSettings?.Image?.BackgroundImageUrl?.Default__
+                BackgroundImageUrl = item?.Snippet?.Thumbnails?.Default__?.Url
             };
         }
     }

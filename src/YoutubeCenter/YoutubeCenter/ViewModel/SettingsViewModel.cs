@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,9 @@ namespace YoutubeCenter.ViewModel
         public ICommand DatabaseBrowseFileCommand { get; set; }
         public ICommand DownloadPathBrowseFolderCommand { get; set; }
 
-        public Settings Settings { get; set; }
+        public ICommand LoadedCommand { get; set; }
+
+        public Settings Settings { get; private set; }
 
         public SettingsViewModel()
         {
@@ -35,13 +38,13 @@ namespace YoutubeCenter.ViewModel
             {
                 DownloadPathBrowseFolderCommand = new RelayCommand(DownloadPathBrowseFolder);
                 DatabaseBrowseFileCommand = new RelayCommand(DatabaseBrowseFile);
-
-                Messenger.Default.Register<MessageBase>(this, x =>
-                {
-                    if (x.Sender is Notifications.NotifyShutdown)
-                        SettingsHelper.Safe(Settings);
-                });
+                LoadedCommand = new RelayCommand(Loaded);
             }
+        }
+
+        private void Loaded()
+        {
+            this.Settings = JsonConvert.DeserializeObject<Settings>(JsonConvert.SerializeObject(Settings.Instance));
         }
 
         private void DatabaseBrowseFile()
@@ -59,7 +62,7 @@ namespace YoutubeCenter.ViewModel
             var result = dialog.ShowDialog(System.Windows.Application.Current.MainWindow.GetIWin32Window());
 
             if (result == DialogResult.OK)
-                Settings.DatabaseLocation = dialog.FileName;
+                this.Settings.DatabaseLocation = dialog.FileName;
         }
 
         private void DownloadPathBrowseFolder()
@@ -70,12 +73,12 @@ namespace YoutubeCenter.ViewModel
             var result = dialog.ShowDialog(System.Windows.Application.Current.MainWindow.GetIWin32Window());
 
             if (result == DialogResult.OK)
-                Settings.DownloadPath = dialog.SelectedPath;
+                this.Settings.DownloadPath = dialog.SelectedPath;
         }
 
         public void Dispose()
         {
-            Messenger.Default.Unregister<MessageBase>(this);
+            this.Settings = null;
         }
     }
 }

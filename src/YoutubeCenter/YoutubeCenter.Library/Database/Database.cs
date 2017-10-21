@@ -1,26 +1,28 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using YoutubeCenter.Library.Model;
 
+
 namespace YoutubeCenter.Library.Database
 {
-    public class Database :IDisposable
+    public class Database : IDisposable
     {
-        private Settings Settings;
-        private SQLiteConnection Connection;
+        public static readonly Database Instance = new Database();
 
         public bool IsDisposed { get; private set; }
 
-        public Database(Settings settings)
-        {
-            this.Settings = settings;
-            Settings.PropertyChanged += this.Settings_PropertyChanged;
+        private SqliteConnection Connection;
 
+        private Database()
+        {
+            Settings.Instance.PropertyChanged += this.Settings_PropertyChanged;
             Load();
         }
 
@@ -32,19 +34,47 @@ namespace YoutubeCenter.Library.Database
 
         private void Load()
         {
-            if (String.IsNullOrEmpty(Settings.DatabaseLocation))
+            if (String.IsNullOrEmpty(Settings.Instance.DatabaseLocation))
                 return;
 
-            if (!File.Exists(Settings.DatabaseLocation))
-                SQLiteConnection.CreateFile(Settings.DatabaseLocation);
+            Connection?.Dispose();
 
-            Connection = new SQLiteConnection($"Data Source={Settings.DatabaseLocation};Version=3;");
+            var builder = new SqliteConnectionStringBuilder
+            {
+                DataSource = Settings.Instance.DatabaseLocation
+            };
+            Connection = new SqliteConnection(builder.ConnectionString);
         }
 
         public void Dispose()
         {
             Connection.Dispose();
             IsDisposed = true;
+        }
+
+        public IEnumerable<Channel> GetChannels()
+        {
+            return Connection?.Query<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel");
+        }
+
+        public async void SaveChannelsAsync(ICollection<Channel> channels)
+        {
+            foreach (var channel in channels)
+            {
+                if (channel == null) continue;
+
+                await Connection.ExecuteAsync("INSERT INTO Channel " +
+                     "(ID, Title, Description, BackgroundImageUrl) VALUES " +
+                     "(@ID, @Title, @Description, @BackgroundImageUrl) " +
+                     "EXCEPT SELECT ID, Title, Description, BackgroundImageUrl FROM Channel",
+                     new
+                     {
+                         ID = channel.Id ?? "",
+                         Title = channel.Title ?? "",
+                         Description = channel.Description ?? "",
+                         BackgroundImageUrl = channel.BackgroundImageUrl ?? ""
+                     });
+            }
         }
     }
 }

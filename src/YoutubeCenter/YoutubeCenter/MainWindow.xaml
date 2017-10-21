@@ -31,17 +31,17 @@
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                <ListBox x:Name="NavListBox" Margin="0 16 0 16" SelectedIndex="0"                         
+                <ListBox x:Name="NavListBox" Margin="0 16 0 16"                         
                              ItemsSource="{Binding Channels}"
                              SelectedItem="{Binding SelectedChannel}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
-                            <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}" PassEventArgsToCommand="True"/>
+                            <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="domain:Channel">
-                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Title}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

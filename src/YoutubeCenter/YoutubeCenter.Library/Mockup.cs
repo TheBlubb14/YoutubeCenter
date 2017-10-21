@@ -12,14 +12,15 @@ namespace YoutubeCenter.Library
     {
         public static ObservableCollection<Channel> GetDummyChannels(string ApiKey)
         {
-            return new ObservableCollection<Channel>()
-            {
-                new Channel {Name = "Channel 1"},
-                new Channel {Name = "Channel 2"},
-                new Channel {Name = "Channel 3"},
-                new Channel {Name = "Channel 4"},
-                new Channel {Name = "Channel 5"},
-            };
+            return null;
+            //return new ObservableCollection<Channel>()
+            //{
+            //    new Channel {Name = "Channel 1"},
+            //    new Channel {Name = "Channel 2"},
+            //    new Channel {Name = "Channel 3"},
+            //    new Channel {Name = "Channel 4"},
+            //    new Channel {Name = "Channel 5"},
+            //};
 
             //var api = new YoutubeApi(ApiKey);
             ////var result = new ObservableCollection<Channel>();
