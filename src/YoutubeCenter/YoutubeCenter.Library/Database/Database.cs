@@ -57,13 +57,19 @@ namespace YoutubeCenter.Library.Database
             return Connection?.Query<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel");
         }
 
-        public async void SaveChannelsAsync(ICollection<Channel> channels)
+        public Channel GetChannelByID(string id)
         {
-            foreach (var channel in channels)
-            {
-                if (channel == null) continue;
+            return Connection?.QueryFirst<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel WHERE ID = @ID",
+                new { ID = id });
+        }
 
-                await Connection.ExecuteAsync("INSERT INTO Channel " +
+        public async Task<bool> SaveChannelAsync(Channel channel)
+        {
+            // Channel already saved
+            if (GetChannelByID(channel.Id) != null)
+                return false;
+
+            await Connection.ExecuteAsync("INSERT INTO Channel " +
                      "(ID, Title, Description, BackgroundImageUrl) VALUES " +
                      "(@ID, @Title, @Description, @BackgroundImageUrl) " +
                      "EXCEPT SELECT ID, Title, Description, BackgroundImageUrl FROM Channel",
@@ -74,6 +80,18 @@ namespace YoutubeCenter.Library.Database
                          Description = channel.Description ?? "",
                          BackgroundImageUrl = channel.BackgroundImageUrl ?? ""
                      });
+
+            return true;
+        }
+
+        public async void SaveChannels(ICollection<Channel> channels)
+        {
+            foreach (var channel in channels)
+            {
+                if (channel == null)
+                    continue;
+
+                await SaveChannelAsync(channel);
             }
         }
     }

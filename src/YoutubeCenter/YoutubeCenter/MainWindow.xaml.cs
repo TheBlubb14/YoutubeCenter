@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YoutubeCenter.ViewModel;
 
 namespace YoutubeCenter
 {
@@ -23,6 +24,8 @@ namespace YoutubeCenter
         public MainWindow()
         {
             InitializeComponent();
+
+            ((MainViewModel)this.DataContext).SnackbarMessageQueue = MainSnackbar.MessageQueue;
         }
 
         public void Dispose()

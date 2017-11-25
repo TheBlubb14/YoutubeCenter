@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using YoutubeCenter.Library.Messaging;
 
-namespace YoutubeCenter
+namespace YoutubeCenter.Service
 {
     public static class ShutdownService
     {

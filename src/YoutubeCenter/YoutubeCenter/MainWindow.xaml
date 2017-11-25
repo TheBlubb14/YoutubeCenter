@@ -8,6 +8,7 @@
         xmlns:Custom="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -31,20 +32,35 @@
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                <ListBox x:Name="NavListBox" Margin="0 16 0 16"                         
+                <Grid Margin="5,5,5,5">
+                    <ListBox x:Name="NavListBox" Margin="0 16 0 16"                         
                              ItemsSource="{Binding Channels}"
                              SelectedItem="{Binding SelectedChannel}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="domain:Channel">
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="domain:Channel">
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <!--AddChannel-->
+                    <TextBox 
+                        Text="{Binding AddChannelText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        wpf:HintAssist.Hint="Add Channel"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="KeyDown">
+                                <Custom:EventToCommand Command="{Binding AddChannelKeyDownCommand}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                </Grid>
             </DockPanel>
         </materialDesign:DrawerHost.LeftDrawerContent>
         <DockPanel>

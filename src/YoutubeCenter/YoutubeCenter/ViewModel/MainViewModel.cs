@@ -15,6 +15,7 @@ using YoutubeCenter.Library;
 using YoutubeCenter.Library.Database;
 using YoutubeCenter.Library.Messaging;
 using YoutubeCenter.Library.Model;
+using YoutubeCenter.Service;
 
 namespace YoutubeCenter.ViewModel
 {
@@ -24,6 +25,8 @@ namespace YoutubeCenter.ViewModel
     public class MainViewModel : ViewModelBase, IDisposable
     {
         public Channel SelectedChannel { get; set; }
+
+        public string AddChannelText { get; set; }
 
         public ObservableCollection<Channel> Channels { get; private set; }
 
@@ -38,6 +41,10 @@ namespace YoutubeCenter.ViewModel
         public ICommand MenuItemExitCommand { get; private set; }
         public ICommand MenuItemSettingsCommand { get; private set; }
         #endregion
+
+        public ICommand AddChannelKeyDownCommand { get; set; }
+
+        public ISnackbarMessageQueue SnackbarMessageQueue { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -54,6 +61,7 @@ namespace YoutubeCenter.ViewModel
                 MenuItemSettingsCommand = new RelayCommand(OpenSettings);
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
+                AddChannelKeyDownCommand = new RelayCommand<KeyEventArgs>(AddChannelKeyDown);
 
                 Channels = new ObservableCollection<Channel>();
                 YoutubeApi = new YoutubeApi(Settings.Instance.YoutubeApiKey);
@@ -67,15 +75,45 @@ namespace YoutubeCenter.ViewModel
             //Database.Instance.SaveChannels(result);
 
 
-            AddChannels(null);
             //var channels = await YoutubeApi.GetChannelsByName(Database.Instance.GetChannels().First().Name);
 
             foreach (var item in Database.Instance.GetChannels())
                 Channels.Add(item);
         }
 
+        public async void AddChannelKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                AddChannelText = "";
+
+            if (e.Key == Key.Enter)
+            {
+                var channelName = AddChannelText;
+                AddChannelText = "";
+
+                var channel = await YoutubeApi.GetChannelByNameAsync(channelName);
+                if (channel != null)
+                {
+                    if (await Database.Instance.SaveChannelAsync(channel))
+                    {
+                        Channels.Add(channel);
+                        SnackbarMessageQueue.Enqueue($"added {channel.Title}");
+                    }
+                    else
+                    {
+                        SnackbarMessageQueue.Enqueue($"{channel.Title} already added");
+                    }
+                }
+                else
+                {
+                    SnackbarMessageQueue.Enqueue($"cant find {channelName}");
+                }
+            }
+        }
+
         private async void AddChannels(List<string> names)
         {
+            return;
             names = new List<string>();
             names.Add("docm77");
             names.Add("ethoslab");
@@ -83,11 +121,12 @@ namespace YoutubeCenter.ViewModel
             names.Add("letsreadsmallbooks");
 
             var channels = await YoutubeApi.GetChannelsByNameAsync(names.ToArray());
-            Database.Instance.SaveChannelsAsync(channels);
+            Database.Instance.SaveChannels(channels);
         }
 
         private async void OpenSettings()
         {
+            // TODO: prevent multiple opening
             using (var model = SimpleIoc.Default.GetInstance<SettingsViewModel>())
             using (var settings = new SettingsControl() { DataContext = model })
             {
