@@ -31,6 +31,7 @@ namespace YoutubeCenter.ViewModel
         public ObservableCollection<Channel> Channels { get; private set; }
 
         private YoutubeApi YoutubeApi;
+        private ObservableCollection<Exception> StartupExceptions = new ObservableCollection<Exception>();
 
         #region Event Commands
         public ICommand NavListBoxSelectionChangedCommand { get; private set; }
@@ -62,10 +63,21 @@ namespace YoutubeCenter.ViewModel
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
                 AddChannelKeyDownCommand = new RelayCommand<KeyEventArgs>(AddChannelKeyDown);
+                this.PropertyChanged += this.MainViewModel_PropertyChanged;
 
                 Channels = new ObservableCollection<Channel>();
                 YoutubeApi = new YoutubeApi(Settings.Instance.YoutubeApiKey);
                 LoadChannels();
+            }
+        }
+
+        private void MainViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(SnackbarMessageQueue):
+                    ShowStartupExceptions();
+                    break;
             }
         }
 
@@ -76,9 +88,15 @@ namespace YoutubeCenter.ViewModel
 
 
             //var channels = await YoutubeApi.GetChannelsByName(Database.Instance.GetChannels().First().Name);
-
-            foreach (var item in Database.Instance.GetChannels())
-                Channels.Add(item);
+            try
+            {
+                foreach (var item in Database.Instance.GetChannels())
+                    Channels.Add(item);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
         }
 
         public async void AddChannelKeyDown(KeyEventArgs e)
@@ -91,24 +109,55 @@ namespace YoutubeCenter.ViewModel
                 var channelName = AddChannelText;
                 AddChannelText = "";
 
-                var channel = await YoutubeApi.GetChannelByNameAsync(channelName);
-                if (channel != null)
+                var result = await YoutubeApi.GetChannelByNameAsync(channelName);
+
+                if (result.Exception == null)
                 {
-                    if (await Database.Instance.SaveChannelAsync(channel))
+                    if (result.Result != null)
                     {
-                        Channels.Add(channel);
-                        SnackbarMessageQueue.Enqueue($"added {channel.Title}");
+                        if (await Database.Instance.SaveChannelAsync(result.Result))
+                        {
+                            Channels.Add(result.Result);
+                            SnackbarMessageQueue.Enqueue($"added {result.Result.Title}");
+                        }
+                        else
+                        {
+                            SnackbarMessageQueue.Enqueue($"{result.Result.Title} already added");
+                        }
                     }
                     else
                     {
-                        SnackbarMessageQueue.Enqueue($"{channel.Title} already added");
+                        SnackbarMessageQueue.Enqueue($"cant find {channelName}");
                     }
                 }
                 else
                 {
-                    SnackbarMessageQueue.Enqueue($"cant find {channelName}");
+                    ShowError(result.Exception);
                 }
             }
+        }
+
+        private void ShowError(Exception exception)
+        {
+            if (SnackbarMessageQueue != null)
+            {
+                SnackbarMessageQueue.Enqueue($"error: {exception.Message}", "show more",
+                    () => { SnackbarMessageQueue.Enqueue($"{exception.ToString()}"); });
+            }
+            else
+            {
+                // if theres an exception at application startup, 
+                // the viewmodel loads before the view and SnackbarMessageQueue is not declared yet
+                StartupExceptions.Add(exception);
+            }
+        }
+
+        private void ShowStartupExceptions()
+        {
+            foreach (var ex in StartupExceptions)
+                ShowError(ex);
+
+            StartupExceptions.Clear();
         }
 
         private async void AddChannels(List<string> names)
@@ -120,8 +169,12 @@ namespace YoutubeCenter.ViewModel
             names.Add("summonersinn");
             names.Add("letsreadsmallbooks");
 
-            var channels = await YoutubeApi.GetChannelsByNameAsync(names.ToArray());
-            Database.Instance.SaveChannels(channels);
+            var result = await YoutubeApi.GetChannelsByNameAsync(names.ToArray());
+
+            if (result.Exception == null)
+                Database.Instance.SaveChannels(result.Result);
+            else
+                ShowError(result.Exception);
         }
 
         private async void OpenSettings()

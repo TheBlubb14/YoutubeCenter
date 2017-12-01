@@ -54,7 +54,7 @@ namespace YoutubeCenter.Library.Database
 
         public IEnumerable<Channel> GetChannels()
         {
-            return Connection?.Query<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel");
+            return Connection?.Query<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel") ?? Enumerable.Empty<Channel>();
         }
 
         public Channel GetChannelByID(string id)

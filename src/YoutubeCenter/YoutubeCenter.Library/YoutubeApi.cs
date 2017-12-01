@@ -1,9 +1,12 @@
-﻿using Google.Apis.Services;
+﻿using Google;
+using Google.Apis.Requests;
+using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,34 +29,56 @@ namespace YoutubeCenter.Library
             });
         }
 
-        public async Task<ICollection<Model.Channel>> GetChannelsByNameAsync(params string[] Names)
+        public async Task<(ICollection<Model.Channel> Result, GoogleApiException Exception)> GetChannelsByNameAsync(params string[] Names)
         {
             var result = new List<Model.Channel>();
-            foreach (var name in Names)
-                result.Add(await GetChannelByNameAsync(name));
 
-            return result;
+            try
+            {
+                foreach (var name in Names)
+                {
+                    var channel = await GetChannelByNameAsync(name);
+                    result.Add(channel.Result);
+
+                    // stops after getting an exception
+                    if (channel.Exception != null)
+                        return (result, channel.Exception);
+                }
+
+                return (result, null);
+            }
+            catch (GoogleApiException ex) when (ex.Error is RequestError)
+            {
+                return (null, ex);
+            }
         }
 
-        public async Task<Model.Channel> GetChannelByNameAsync(string Name)
+        public async Task<(Model.Channel Result, GoogleApiException Exception)> GetChannelByNameAsync(string Name)
         {
-            var search = _service.Channels.List("snippet");
-            search.ForUsername = Name;
-
-            var result = await search.ExecuteAsync().ConfigureAwait(false);
-
-            if (result?.Items.Count < 1)
-                return null;
-
-            var item = result.Items[0];
-
-            return new Model.Channel()
+            try
             {
-                Id = item?.Id,
-                Title = item?.Snippet?.Title,
-                Description = item?.Snippet?.Description,
-                BackgroundImageUrl = item?.Snippet?.Thumbnails?.Default__?.Url
-            };
+                var search = _service.Channels.List("snippet");
+                search.ForUsername = Name;
+
+                var result = await search.ExecuteAsync().ConfigureAwait(false);
+
+                if (result?.Items.Count < 1)
+                    return (null, null);
+
+                var item = result.Items[0];
+
+                return (new Model.Channel()
+                {
+                    Id = item?.Id,
+                    Title = item?.Snippet?.Title,
+                    Description = item?.Snippet?.Description,
+                    BackgroundImageUrl = item?.Snippet?.Thumbnails?.Default__?.Url
+                }, null);
+            }
+            catch (GoogleApiException ex) when (ex.Error is RequestError)
+            {
+                return (null, ex);
+            }
         }
     }
 }
