@@ -29,7 +29,7 @@ namespace YoutubeCenter.Library
             });
         }
 
-        public async Task<(ICollection<Model.Channel> Result, GoogleApiException Exception)> GetChannelsByNameAsync(params string[] Names)
+        public async Task<(ICollection<Model.Channel> Result, Exception Exception)> GetChannelsByNameAsync(params string[] Names)
         {
             var result = new List<Model.Channel>();
 
@@ -49,11 +49,16 @@ namespace YoutubeCenter.Library
             }
             catch (GoogleApiException ex) when (ex.Error is RequestError)
             {
+                // TODO: handel this error better
+                return (null, ex);
+            }
+            catch (Exception ex)
+            {
                 return (null, ex);
             }
         }
 
-        public async Task<(Model.Channel Result, GoogleApiException Exception)> GetChannelByNameAsync(string Name)
+        public async Task<(Model.Channel Result, Exception Exception)> GetChannelByNameAsync(string Name)
         {
             try
             {
@@ -76,6 +81,11 @@ namespace YoutubeCenter.Library
                 }, null);
             }
             catch (GoogleApiException ex) when (ex.Error is RequestError)
+            {
+                // TODO: handel this error better
+                return (null, ex);
+            }
+            catch (Exception ex)
             {
                 return (null, ex);
             }
