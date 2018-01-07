@@ -44,6 +44,9 @@ namespace YoutubeCenter.Library.Database
                 DataSource = Settings.Instance.DatabaseLocation
             };
             Connection = new SqliteConnection(builder.ConnectionString);
+
+            // Create Table
+            Connection.Execute("CREATE TABLE IF NOT EXISTS \"Channel\" ( `SysNumber` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `ID` TEXT, `Title` TEXT, `Description` TEXT, `BackgroundImageUrl` TEXT )");
         }
 
         public void Dispose()
@@ -59,7 +62,7 @@ namespace YoutubeCenter.Library.Database
 
         public Channel GetChannelByID(string id)
         {
-            return Connection?.QueryFirst<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel WHERE ID = @ID",
+            return Connection?.QueryFirstOrDefault<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel WHERE ID = @ID",
                 new { ID = id });
         }
 
