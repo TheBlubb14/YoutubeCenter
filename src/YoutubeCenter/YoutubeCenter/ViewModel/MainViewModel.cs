@@ -47,6 +47,8 @@ namespace YoutubeCenter.ViewModel
 
         public ISnackbarMessageQueue SnackbarMessageQueue { get; set; }
 
+        private bool IsSettingsDialogOpen;
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -179,19 +181,23 @@ namespace YoutubeCenter.ViewModel
 
         private async void OpenSettings()
         {
-            // TODO: prevent multiple opening
-            using (var model = SimpleIoc.Default.GetInstance<SettingsViewModel>())
-            using (var settings = new SettingsControl() { DataContext = model })
-            {
-                await DialogHost.Show(settings, new DialogClosingEventHandler((obj, args) =>
+            if (!IsSettingsDialogOpen)
+                using (var model = SimpleIoc.Default.GetInstance<SettingsViewModel>())
+                using (var settings = new SettingsControl() { DataContext = model })
                 {
-                    if (args.Parameter.ToString() == "1")
-                    {
-                        Settings.Instance = model.Settings;
-                        Settings.Safe();
-                    }
-                }));
-            }
+                    await DialogHost.Show(settings,
+                        new DialogOpenedEventHandler((obj, args) => IsSettingsDialogOpen = true),
+                        new DialogClosingEventHandler((obj, args) =>
+                        {
+                            IsSettingsDialogOpen = false;
+
+                            if (args.Parameter.ToString() == "1")
+                            {
+                                Settings.Instance = model.Settings;
+                                Settings.Safe();
+                            }
+                        }));
+                }
         }
 
         private void KeyDown(KeyEventArgs e)
