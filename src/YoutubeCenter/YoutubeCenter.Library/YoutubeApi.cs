@@ -62,7 +62,7 @@ namespace YoutubeCenter.Library
         {
             try
             {
-                var search = _service.Channels.List("snippet");
+                var search = _service.Channels.List("snippet, contentDetails");
                 search.ForUsername = Name;
 
                 var result = await search.ExecuteAsync().ConfigureAwait(false);
@@ -77,8 +77,64 @@ namespace YoutubeCenter.Library
                     Id = item?.Id,
                     Title = item?.Snippet?.Title,
                     Description = item?.Snippet?.Description,
-                    BackgroundImageUrl = item?.Snippet?.Thumbnails?.Default__?.Url
+                    BackgroundImageUrl = item?.Snippet?.Thumbnails?.Default__?.Url,
+                    UploadsPlaylistId = item?.ContentDetails?.RelatedPlaylists?.Uploads
                 }, null);
+            }
+            catch (GoogleApiException ex) when (ex.Error is RequestError)
+            {
+                // TODO: handel this error better
+                return (null, ex);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex);
+            }
+        }
+
+        public async Task<(Model.Video Result, Exception Exception)> GetVideoByVideoIdAsync(string videoId)
+        {
+            try
+            {
+                var search = _service.Videos.List("snippet");
+                search.Id = videoId;
+
+                var result = await search.ExecuteAsync().ConfigureAwait(false);
+
+                if (result?.Items.Count < 1)
+                    return (null, null);
+
+                var item = result.Items[0];
+
+                return (new Model.Video(item), null);
+            }
+            catch (GoogleApiException ex) when (ex.Error is RequestError)
+            {
+                // TODO: handel this error better
+                return (null, ex);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex);
+            }
+        }
+
+
+        public async Task<(List<Model.Video> Result, Exception Exception)> GetVideosByChannelAsync(Model.Channel channel, int count = 1)
+        {
+            try
+            {
+                var search = _service.PlaylistItems.List("snippet, contentDetails");
+                search.MaxResults = count;
+                search.PlaylistId = channel.UploadsPlaylistId;
+
+                var result = await search.ExecuteAsync().ConfigureAwait(false);
+
+                if (result?.Items.Count < 1)
+                    return (null, null);
+
+                var item = result.Items[0];
+                return (new List<Model.Video>(result.Items.Select(x => new Model.Video(x))), null);
             }
             catch (GoogleApiException ex) when (ex.Error is RequestError)
             {

@@ -103,6 +103,13 @@ namespace YoutubeCenter.ViewModel
 
         public async void AddChannelKeyDown(KeyEventArgs e)
         {
+            if (Debugger.IsAttached)
+                if (e.Key == Key.F8)
+                {
+                    await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 7);
+                    await YoutubeApi.GetVideoByVideoIdAsync("Noj55_o0WOM");
+                }
+
             if (e.Key == Key.Escape)
                 AddChannelText = "";
 

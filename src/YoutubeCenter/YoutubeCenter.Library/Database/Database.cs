@@ -46,7 +46,7 @@ namespace YoutubeCenter.Library.Database
             Connection = new SqliteConnection(builder.ConnectionString);
 
             // Create Table
-            Connection.Execute("CREATE TABLE IF NOT EXISTS \"Channel\" ( `SysNumber` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `ID` TEXT, `Title` TEXT, `Description` TEXT, `BackgroundImageUrl` TEXT )");
+            Connection.Execute("CREATE TABLE IF NOT EXISTS \"Channel\" ( `SysNumber` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `ID` TEXT, `Title` TEXT, `Description` TEXT, `BackgroundImageUrl` TEXT, `UploadsPlaylistId` TEXT )");
         }
 
         public void Dispose()
@@ -57,12 +57,12 @@ namespace YoutubeCenter.Library.Database
 
         public IEnumerable<Channel> GetChannels()
         {
-            return Connection?.Query<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel") ?? Enumerable.Empty<Channel>();
+            return Connection?.Query<Channel>("SELECT * FROM Channel") ?? Enumerable.Empty<Channel>();
         }
 
         public Channel GetChannelByID(string id)
         {
-            return Connection?.QueryFirstOrDefault<Channel>("SELECT ID, Title, Description, BackgroundImageUrl FROM Channel WHERE ID = @ID",
+            return Connection?.QueryFirstOrDefault<Channel>("SELECT * FROM Channel WHERE ID = @ID",
                 new { ID = id });
         }
 
@@ -73,15 +73,16 @@ namespace YoutubeCenter.Library.Database
                 return false;
 
             await Connection.ExecuteAsync("INSERT INTO Channel " +
-                     "(ID, Title, Description, BackgroundImageUrl) VALUES " +
-                     "(@ID, @Title, @Description, @BackgroundImageUrl) " +
-                     "EXCEPT SELECT ID, Title, Description, BackgroundImageUrl FROM Channel",
+                     "(ID, Title, Description, BackgroundImageUrl, UploadsPlaylistId) VALUES " +
+                     "(@ID, @Title, @Description, @BackgroundImageUrl, @UploadsPlaylistId) " +
+                     "EXCEPT SELECT ID, Title, Description, BackgroundImageUrl, UploadsPlaylistId FROM Channel",
                      new
                      {
                          ID = channel.Id ?? "",
                          Title = channel.Title ?? "",
                          Description = channel.Description ?? "",
-                         BackgroundImageUrl = channel.BackgroundImageUrl ?? ""
+                         BackgroundImageUrl = channel.BackgroundImageUrl ?? "",
+                         UploadsPlaylistId = channel.UploadsPlaylistId ?? ""
                      });
 
             return true;
