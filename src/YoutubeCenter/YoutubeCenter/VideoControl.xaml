@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="YoutubeCenter.VideoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:YoutubeCenter"
+             xmlns:m="clr-namespace:YoutubeCenter.Library.Model;assembly=YoutubeCenter.Library"
+             mc:Ignorable="d"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal" 
+             TextOptions.TextRenderingMode="Auto"        
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DataContext="{d:DesignInstance m:Video}"
+             d:DesignWidth="640" d:DesignHeight="480">
+    
+    <materialDesign:Card Margin="4 4 0 4" Width="360">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+            <Image Grid.Row="0" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Image}"/>
+                
+<!--
+            <Button Grid.Row="0"
+                                Name="Button_Play"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" 
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Visibility="{Binding Path=IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Click="Button_Play_Click"
+                                Opacity="0.7" Margin="0,0,5,-10">
+                    <materialDesign:PackIcon Kind="Play" />
+                </Button>
+                <materialDesign:Card Grid.Row="0"
+                            Name="Card_ProgressBar_Download"
+                            Visibility="{Binding Path=IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            UniformCornerRadius="14"
+                            Padding="5"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,5,-2.5">
+                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                            Name="ProgressBar_Download"
+                            Value="{Binding DownloadPercentage}"
+                            IsIndeterminate="True"/>
+                </materialDesign:Card>
+
+                <Button Grid.Row="0"
+                                Name="Button_Download"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Visibility="{Binding Path=DownloadButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Click="Button_Download_Click"
+                                Opacity="0.7" Margin="0,0,5,-10">
+                    <materialDesign:PackIcon Kind="Download" />
+                </Button>-->
+
+                <TextBlock Grid.Row="1" Text="{Binding Title}" />
+            </Grid>
+    </materialDesign:Card>
+</UserControl>

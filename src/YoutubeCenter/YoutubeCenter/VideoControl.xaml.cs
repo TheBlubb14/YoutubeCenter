@@ -12,26 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using YoutubeCenter.ViewModel;
 
 namespace YoutubeCenter
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für VideoControl.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisposable
+    public partial class VideoControl : UserControl
     {
-        public MainWindow()
+        public VideoControl()
         {
             InitializeComponent();
-
-            ((MainViewModel)this.DataContext).SnackbarMessageQueue = MainSnackbar.MessageQueue;
-        }
-
-        public void Dispose()
-        {
-            if (this.DataContext is IDisposable disposable)
-                disposable.Dispose();
         }
     }
 }
