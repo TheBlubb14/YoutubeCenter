@@ -1,4 +1,4 @@
-﻿<Window x:Class="YoutubeCenter.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:YoutubeCenter"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Custom="http://www.galasoft.ch/mvvmlight"
-        mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="YoutubeCenter.MainWindow"
+        mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -25,13 +26,13 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-        <materialDesign:DrawerHost.LeftDrawerContent>
+    <wpf:DrawerHost x:Name="drawerHost" IsLeftDrawerOpen="{Binding IsChecked, ElementName=MenuToggleButton}">
+        <wpf:DrawerHost.LeftDrawerContent>
             <DockPanel MinWidth="212">
-                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
-                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+                                    IsChecked="{Binding IsChecked, ElementName=MenuToggleButton, Mode=TwoWay}" />
                 <Grid Margin="5,5,5,5">
                     <ListBox x:Name="NavListBox" Margin="0 16 0 16"                         
                              ItemsSource="{Binding Channels}"
@@ -39,6 +40,7 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
+                                <ei:ChangePropertyAction TargetObject="{Binding ElementName=MenuToggleButton}" PropertyName="IsChecked" Value="False"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListBox.ItemTemplate>
@@ -62,26 +64,26 @@
                     </TextBox>
                 </Grid>
             </DockPanel>
-        </materialDesign:DrawerHost.LeftDrawerContent>
+        </wpf:DrawerHost.LeftDrawerContent>
         <DockPanel>
-            <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" DockPanel.Dock="Top">
+            <wpf:ColorZone Padding="16" wpf:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" DockPanel.Dock="Top">
                 <DockPanel>
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False" x:Name="MenuToggleButton"/>
-                    <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                    <wpf:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                         <StackPanel>
                             <!--Options Buttons-->
                             <MenuItem Header="Settings" InputGestureText="Ctrl+X" Command="{Binding MenuItemSettingsCommand}">
                                 <MenuItem.Icon>
-                                    <materialDesign:PackIcon Kind="Settings" />
+                                    <wpf:PackIcon Kind="Settings" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="Exit" InputGestureText="Ctrl+E" Command="{Binding MenuItemExitCommand}">
                                 <MenuItem.Icon>
-                                    <materialDesign:PackIcon Kind="ExitToApp" />
+                                    <wpf:PackIcon Kind="ExitToApp" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </StackPanel>
-                    </materialDesign:PopupBox>
+                    </wpf:PopupBox>
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="YoutubeCenter" >
                         <TextBlock.InputBindings>
                             <!--Command Binding navigate to "Home"-->
@@ -89,8 +91,8 @@
                         </TextBlock.InputBindings>
                     </TextBlock>
                 </DockPanel>
-            </materialDesign:ColorZone>
-            <materialDesign:DialogHost Identifier="RootDialog">
+            </wpf:ColorZone>
+            <wpf:DialogHost Identifier="RootDialog">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -99,10 +101,22 @@
                     </Grid.RowDefinitions>
                     <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto">
                         <!--Content goes here-->
+                        <ItemsControl ItemsSource="{Binding Videos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:VideoControl/>                            
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
                     </ScrollViewer>
-                    <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar" Grid.Row="1" />
+                    <wpf:Snackbar MessageQueue="{wpf:MessageQueue}" x:Name="MainSnackbar" Grid.Row="1" />
                 </Grid>
-            </materialDesign:DialogHost>
+            </wpf:DialogHost>
         </DockPanel>
-    </materialDesign:DrawerHost>
+    </wpf:DrawerHost>
 </Window>

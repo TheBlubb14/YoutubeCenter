@@ -1,8 +1,8 @@
+using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
-using Microsoft.Practices.ServiceLocation;
 using YoutubeCenter.Library.Messaging;
 
 namespace YoutubeCenter.ViewModel

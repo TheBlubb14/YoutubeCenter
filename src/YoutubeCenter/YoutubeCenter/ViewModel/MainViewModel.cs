@@ -30,6 +30,8 @@ namespace YoutubeCenter.ViewModel
 
         public ObservableCollection<Channel> Channels { get; private set; }
 
+        public ObservableCollection<Video> Videos { get; private set; }
+
         private YoutubeApi YoutubeApi;
         private ObservableCollection<Exception> StartupExceptions = new ObservableCollection<Exception>();
 
@@ -68,6 +70,7 @@ namespace YoutubeCenter.ViewModel
                 this.PropertyChanged += this.MainViewModel_PropertyChanged;
 
                 Channels = new ObservableCollection<Channel>();
+                Videos = new ObservableCollection<Video>();
                 YoutubeApi = new YoutubeApi(Settings.Instance.YoutubeApiKey);
                 LoadChannels();
             }
@@ -106,8 +109,7 @@ namespace YoutubeCenter.ViewModel
             if (Debugger.IsAttached)
                 if (e.Key == Key.F8)
                 {
-                    await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 7);
-                    await YoutubeApi.GetVideoByVideoIdAsync("Noj55_o0WOM");
+
                 }
 
             if (e.Key == Key.Escape)
@@ -217,10 +219,20 @@ namespace YoutubeCenter.ViewModel
 
         private bool IsControl => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
 
-        public void NavListBoxSelectionChanged()
+        public async void NavListBoxSelectionChanged()
         {
-            // Load Channel?
-            var a = SelectedChannel;
+            // Load videos
+            var result = await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 10);
+
+            if (result.Exception == null)
+            {
+                Videos.Clear();
+                result.Result.ForEach(x => Videos.Add(x));
+            }
+            else
+            {
+                ShowError(result.Exception);
+            }
         }
 
         public void Dispose()

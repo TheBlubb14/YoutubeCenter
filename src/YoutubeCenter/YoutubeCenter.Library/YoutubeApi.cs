@@ -124,6 +124,9 @@ namespace YoutubeCenter.Library
         {
             try
             {
+                if (channel == null)
+                    return (null, new NullReferenceException(nameof(channel)));
+
                 var search = _service.PlaylistItems.List("snippet, contentDetails");
                 search.MaxResults = count;
                 search.PlaylistId = channel.UploadsPlaylistId;
