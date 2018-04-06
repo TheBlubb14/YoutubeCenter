@@ -143,11 +143,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="Messaging\Notifications.cs" />
     <Compile Include="Mockup.cs" />
-    <Compile Include="Models\Channel.cs" />
-    <Compile Include="Models\Settings.cs" />
-    <Compile Include="Models\Video.cs" />
+    <Compile Include="Model\Channel.cs" />
+    <Compile Include="Model\Playlist.cs" />
+    <Compile Include="Model\Settings.cs" />
+    <Compile Include="Model\Video.cs" />
+    <Compile Include="Model\YoutubeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="YoutubeApi.cs" />
   </ItemGroup>

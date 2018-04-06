@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using YoutubeCenter.Library;
 using YoutubeCenter.Library.Database;
@@ -30,7 +31,9 @@ namespace YoutubeCenter.ViewModel
 
         public ObservableCollection<Channel> Channels { get; private set; }
 
-        public ObservableCollection<Video> Videos { get; private set; }
+        //public ObservableCollection<Video> Videos { get; private set; }
+
+        public Playlist Playlist { get; set; }
 
         private YoutubeApi YoutubeApi;
         private ObservableCollection<Exception> StartupExceptions = new ObservableCollection<Exception>();
@@ -38,6 +41,7 @@ namespace YoutubeCenter.ViewModel
         #region Event Commands
         public ICommand NavListBoxSelectionChangedCommand { get; private set; }
         public ICommand KeyDownCommand { get; private set; }
+        public ICommand ScrollChangedCommand { get; private set; }
         #endregion
 
         #region MenuItem Commands
@@ -66,11 +70,12 @@ namespace YoutubeCenter.ViewModel
                 MenuItemSettingsCommand = new RelayCommand(OpenSettings);
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
+                ScrollChangedCommand = new RelayCommand<ScrollChangedEventArgs>(ScrollChanged);
                 AddChannelKeyDownCommand = new RelayCommand<KeyEventArgs>(AddChannelKeyDown);
                 this.PropertyChanged += this.MainViewModel_PropertyChanged;
 
                 Channels = new ObservableCollection<Channel>();
-                Videos = new ObservableCollection<Video>();
+                //Videos = new ObservableCollection<Video>();
                 YoutubeApi = new YoutubeApi(Settings.Instance.YoutubeApiKey);
                 LoadChannels();
             }
@@ -215,6 +220,8 @@ namespace YoutubeCenter.ViewModel
                 MenuItemExitCommand.Execute(null);
             else if (e.Key == Key.X && IsControl)
                 MenuItemSettingsCommand.Execute(null);
+            else if (e.Key == Key.F && IsControl)
+                Playlist?.LoadMore();
         }
 
         private bool IsControl => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
@@ -222,17 +229,24 @@ namespace YoutubeCenter.ViewModel
         public async void NavListBoxSelectionChanged()
         {
             // Load videos
-            var result = await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 50);
+            //var result = await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 50);
+            Playlist = new Playlist(SelectedChannel, YoutubeApi);
 
-            if (result.Exception == null)
-            {
-                Videos.Clear();
-                result.Result.ForEach(x => Videos.Add(x));
-            }
-            else
-            {
-                ShowError(result.Exception);
-            }
+            //if (result.Exception == null)
+            //{
+            //    //Videos.Clear();
+
+            //}
+            //else
+            //{
+            //    ShowError(result.Exception);
+            //}
+        }
+
+        private void ScrollChanged(ScrollChangedEventArgs e)
+        {
+            //if (e.VerticalOffset > 1300)
+                //Playlist.LoadMore();
         }
 
         public void Dispose()

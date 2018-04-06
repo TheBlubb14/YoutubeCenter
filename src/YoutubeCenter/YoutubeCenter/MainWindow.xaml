@@ -100,11 +100,16 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ScrollChanged">
+                                <Custom:EventToCommand Command="{Binding ScrollChangedCommand}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <!--Content goes here-->
-                        <ItemsControl ItemsSource="{Binding Videos}">
+                        <ItemsControl ItemsSource="{Binding Playlist.Videos}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <local:VideoControl/>                            
+                                    <local:VideoControl/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>

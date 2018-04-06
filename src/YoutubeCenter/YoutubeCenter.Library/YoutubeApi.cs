@@ -3,6 +3,7 @@ using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,7 +93,7 @@ namespace YoutubeCenter.Library
             }
         }
 
-        public async Task<(Model.Video Result, Exception Exception)> GetVideoByVideoIdAsync(string videoId)
+        public async Task<(VideoListResponse Result, Exception Exception)> GetVideoByVideoIdAsync(string videoId)
         {
             try
             {
@@ -101,17 +102,7 @@ namespace YoutubeCenter.Library
 
                 var result = await search.ExecuteAsync().ConfigureAwait(false);
 
-                if (result?.Items.Count < 1)
-                    return (null, null);
-
-                var item = result.Items[0];
-
-                return (new Model.Video(item), null);
-            }
-            catch (GoogleApiException ex) when (ex.Error is RequestError)
-            {
-                // TODO: handel this error better
-                return (null, ex);
+                return (result, null);
             }
             catch (Exception ex)
             {
@@ -120,34 +111,66 @@ namespace YoutubeCenter.Library
         }
 
 
-        public async Task<(List<Model.Video> Result, Exception Exception)> GetVideosByChannelAsync(Model.Channel channel, int count = 1)
+        public async Task<(PlaylistItemListResponse Result, Exception Exception)> GetVideosByChannelAsync(Model.Channel channel, int count = 1)
         {
             try
             {
                 if (channel == null)
                     return (null, new NullReferenceException(nameof(channel)));
 
-                var search = _service.PlaylistItems.List("snippet, contentDetails");
-                search.MaxResults = count;
-                search.PlaylistId = channel.UploadsPlaylistId;
+                var request = CreatePlaylistRequest(count);
+                request.PlaylistId = channel.UploadsPlaylistId;
 
-                var result = await search.ExecuteAsync().ConfigureAwait(false);
-
-                if (result?.Items.Count < 1)
-                    return (null, null);
-
-                var item = result.Items[0];
-                return (new List<Model.Video>(result.Items.Select(x => new Model.Video(x))), null);
-            }
-            catch (GoogleApiException ex) when (ex.Error is RequestError)
-            {
-                // TODO: handel this error better
-                return (null, ex);
+                return (await ExecutePlaylistRequest(request), null);
             }
             catch (Exception ex)
             {
                 return (null, ex);
             }
+        }
+
+
+        internal PlaylistItemsResource.ListRequest CreatePlaylistRequest(int itemCount = 50)
+        {
+            itemCount = itemCount.Clamp(1, 50);
+
+            var request = _service.PlaylistItems.List("snippet, contentDetails");
+            request.MaxResults = itemCount;
+
+            return request;
+        }
+
+        internal async Task<PlaylistItemListResponse> ExecutePlaylistRequest(PlaylistItemsResource.ListRequest request)
+        {
+            return await request.ExecuteAsync().ConfigureAwait(false);
+        }
+
+        private async Task<(PlaylistItemListResponse Result, Exception Exception)> GetPlaylist(string pageToken, int count = 50)
+        {
+            if (string.IsNullOrEmpty(pageToken))
+                return (null, new NullReferenceException(nameof(pageToken)));
+
+            try
+            {
+                var request = CreatePlaylistRequest(count);
+                request.PageToken = pageToken;
+
+                return (await ExecutePlaylistRequest(request), null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex);
+            }
+        }
+
+        public async Task<(PlaylistItemListResponse Result, Exception Exception)> GetNextPlaylist(PlaylistItemListResponse playlistItemListResponse, int count = 50)
+        {
+            return await GetPlaylist(playlistItemListResponse.NextPageToken, count);
+        }
+
+        public async Task<(PlaylistItemListResponse Result, Exception Exception)> GetPreviousPlaylist(PlaylistItemListResponse playlistItemListResponse, int count = 50)
+        {
+            return await GetPlaylist(playlistItemListResponse.PrevPageToken, count);
         }
     }
 }
