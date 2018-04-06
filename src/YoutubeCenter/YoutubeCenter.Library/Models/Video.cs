@@ -35,7 +35,12 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = youtubeVideo.Snippet?.Thumbnails;
             this.PublishedAt = youtubeVideo.Snippet?.PublishedAt;
 
-            DownloadImage(youtubeVideo?.Snippet?.Thumbnails?.Maxres?.Url ?? youtubeVideo?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage(
+                youtubeVideo?.Snippet?.Thumbnails?.Maxres?.Url ??
+                youtubeVideo?.Snippet?.Thumbnails?.High?.Url ??
+                youtubeVideo?.Snippet?.Thumbnails?.Medium?.Url ??
+                youtubeVideo?.Snippet?.Thumbnails?.Standard?.Url ??
+                youtubeVideo?.Snippet?.Thumbnails?.Default__?.Url);
         }
 
         public Video(PlaylistItem playlistItem)
@@ -46,7 +51,12 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = playlistItem.Snippet?.Thumbnails;
             this.PublishedAt = playlistItem.Snippet?.PublishedAt;
 
-            DownloadImage(playlistItem?.Snippet?.Thumbnails?.Maxres?.Url ?? playlistItem?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage(
+                playlistItem?.Snippet?.Thumbnails?.Maxres?.Url ??
+                playlistItem?.Snippet?.Thumbnails?.High?.Url ??
+                playlistItem?.Snippet?.Thumbnails?.Medium?.Url ??
+                playlistItem?.Snippet?.Thumbnails?.Standard?.Url ??
+                playlistItem?.Snippet?.Thumbnails?.Default__?.Url);
         }
 
         private async void DownloadImage(string url)

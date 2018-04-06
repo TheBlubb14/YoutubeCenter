@@ -222,7 +222,7 @@ namespace YoutubeCenter.ViewModel
         public async void NavListBoxSelectionChanged()
         {
             // Load videos
-            var result = await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 10);
+            var result = await YoutubeApi.GetVideosByChannelAsync(SelectedChannel, 50);
 
             if (result.Exception == null)
             {
