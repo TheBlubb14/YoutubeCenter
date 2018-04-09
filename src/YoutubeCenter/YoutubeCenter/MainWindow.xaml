@@ -9,6 +9,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="YoutubeCenter.MainWindow"
+        xmlns:helper="clr-namespace:YoutubeCenter.Helper"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -99,12 +100,9 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="ScrollChanged">
-                                <Custom:EventToCommand Command="{Binding ScrollChangedCommand}" PassEventArgsToCommand="True"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                    <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto" 
+                                  helper:ScrollHelper.ScrollToBottom="{Binding ScrollToBottomCommand}"
+                                  >
                         <!--Content goes here-->
                         <ItemsControl ItemsSource="{Binding Playlist.Videos}">
                             <ItemsControl.ItemTemplate>

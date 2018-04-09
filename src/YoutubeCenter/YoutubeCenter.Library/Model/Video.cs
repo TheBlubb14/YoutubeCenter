@@ -21,6 +21,21 @@ namespace YoutubeCenter.Library.Model
         public BitmapImage Image { get; set; }
 
 
+        private bool isVisible = false;
+
+        public bool IsVisible
+        {
+            get => isVisible;
+            set
+            {
+                isVisible = value;
+
+                //if (isVisible)
+                //    DownloadImage();
+                //else
+                //    Image = null;
+            }
+        }
 
         public Video()
         {
@@ -35,12 +50,7 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = youtubeVideo.Snippet?.Thumbnails;
             this.PublishedAt = youtubeVideo.Snippet?.PublishedAt;
 
-            DownloadImage(
-                youtubeVideo?.Snippet?.Thumbnails?.Maxres?.Url ??
-                youtubeVideo?.Snippet?.Thumbnails?.High?.Url ??
-                youtubeVideo?.Snippet?.Thumbnails?.Medium?.Url ??
-                youtubeVideo?.Snippet?.Thumbnails?.Standard?.Url ??
-                youtubeVideo?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage();
         }
 
         public Video(PlaylistItem playlistItem)
@@ -51,16 +61,17 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = playlistItem.Snippet?.Thumbnails;
             this.PublishedAt = playlistItem.Snippet?.PublishedAt;
 
-            DownloadImage(
-                playlistItem?.Snippet?.Thumbnails?.Maxres?.Url ??
-                playlistItem?.Snippet?.Thumbnails?.High?.Url ??
-                playlistItem?.Snippet?.Thumbnails?.Medium?.Url ??
-                playlistItem?.Snippet?.Thumbnails?.Standard?.Url ??
-                playlistItem?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage();
         }
 
-        private async void DownloadImage(string url)
+        private async void DownloadImage()
         {
+            var url = this.ThumbnailDetails?.Maxres?.Url ??
+                this.ThumbnailDetails?.High?.Url ??
+                this.ThumbnailDetails?.Medium?.Url ??
+                this.ThumbnailDetails?.Standard?.Url ??
+                this.ThumbnailDetails?.Default__?.Url;
+
             if (string.IsNullOrEmpty(url))
                 return;
 

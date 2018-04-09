@@ -154,6 +154,7 @@
     </ApplicationDefinition>
     <Compile Include="Extensions.cs" />
     <Compile Include="OldWindow.cs" />
+    <Compile Include="Helper\ScrollHelper.cs" />
     <Compile Include="SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>

@@ -41,7 +41,8 @@ namespace YoutubeCenter.ViewModel
         #region Event Commands
         public ICommand NavListBoxSelectionChangedCommand { get; private set; }
         public ICommand KeyDownCommand { get; private set; }
-        public ICommand ScrollChangedCommand { get; private set; }
+        public ICommand ScrollToBottomCommand { get; private set; }
+        public ICommand ItemVisibilityChangedCommand { get; set; }
         #endregion
 
         #region MenuItem Commands
@@ -70,8 +71,9 @@ namespace YoutubeCenter.ViewModel
                 MenuItemSettingsCommand = new RelayCommand(OpenSettings);
                 MenuItemExitCommand = new RelayCommand(ShutdownService.RequestShutdown);
                 KeyDownCommand = new RelayCommand<KeyEventArgs>(KeyDown);
-                ScrollChangedCommand = new RelayCommand<ScrollChangedEventArgs>(ScrollChanged);
+                ScrollToBottomCommand = new RelayCommand(ScrollToBottom);
                 AddChannelKeyDownCommand = new RelayCommand<KeyEventArgs>(AddChannelKeyDown);
+                ItemVisibilityChangedCommand = new RelayCommand(() => { });
                 this.PropertyChanged += this.MainViewModel_PropertyChanged;
 
                 Channels = new ObservableCollection<Channel>();
@@ -220,8 +222,6 @@ namespace YoutubeCenter.ViewModel
                 MenuItemExitCommand.Execute(null);
             else if (e.Key == Key.X && IsControl)
                 MenuItemSettingsCommand.Execute(null);
-            else if (e.Key == Key.F && IsControl)
-                Playlist?.LoadMore();
         }
 
         private bool IsControl => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
@@ -243,10 +243,9 @@ namespace YoutubeCenter.ViewModel
             //}
         }
 
-        private void ScrollChanged(ScrollChangedEventArgs e)
+        private void ScrollToBottom()
         {
-            //if (e.VerticalOffset > 1300)
-                //Playlist.LoadMore();
+            Playlist?.LoadMore();
         }
 
         public void Dispose()
