@@ -1,9 +1,5 @@
 using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
-using MaterialDesignThemes.Wpf;
-using YoutubeCenter.Library.Messaging;
 
 namespace YoutubeCenter.ViewModel
 {
@@ -19,16 +15,6 @@ namespace YoutubeCenter.ViewModel
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                // Create design time view services and models
-            }
-            else
-            {
-                // Create run time view services and models
-            }
-
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
         }

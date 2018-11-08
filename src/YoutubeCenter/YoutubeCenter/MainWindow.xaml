@@ -10,6 +10,7 @@
         xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="YoutubeCenter.MainWindow"
         xmlns:helper="clr-namespace:YoutubeCenter.Helper"
+        xmlns:wpfControls="clr-namespace:Digimezzo.WPFControls;assembly=Digimezzo.WPFControls"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -100,23 +101,45 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto" 
-                                  helper:ScrollHelper.ScrollToBottom="{Binding ScrollToBottomCommand}"
-                                  >
+                    <!--<ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto" >-->
                         <!--Content goes here-->
-                        <ItemsControl ItemsSource="{Binding Playlist.Videos}">
-                            <ItemsControl.ItemTemplate>
+                    <ItemsControl Grid.Row="1"
+                                      ItemsSource="{Binding Playlist.Videos}"
+                                      ScrollViewer.CanContentScroll="True">
+                                      <!--VirtualizingStackPanel.IsVirtualizing="True"-->
+                                  <!--VirtualizingStackPanel.CleanUpVirtualizedItem="ItemsControl_CleanUpVirtualizedItem"-->
+                        <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <local:VideoControl/>
+                                    <local:VideoControl Visibility="Visible"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel/>
+                                <!--<wpfControls:VirtualizingWrapPanel/>-->
+                                <WrapPanel/>
+                                <!--<VirtualizingStackPanel/>-->
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </ScrollViewer>
+                        <ItemsControl.Template>
+                            <ControlTemplate>
+                                <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                        Padding="{TemplateBinding Control.Padding}"
+                                        BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                        Background="{TemplateBinding Panel.Background}"
+                                        SnapsToDevicePixels="True">
+                                    <ScrollViewer Padding="{TemplateBinding Control.Padding}"
+                                                  Focusable="False"
+                                                  helper:ScrollHelper.ScrollToBottom="{Binding ScrollToBottomCommand}"
+                                                  helper:ItemVisibilityHelper.ItemVisibility="{Binding ItemVisibilityChangedCommand}"
+                                                  >
+                                        <ItemsPresenter
+                                            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"  />
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                    </ItemsControl>
+                    <!--</ScrollViewer>-->
                     <wpf:Snackbar MessageQueue="{wpf:MessageQueue}" x:Name="MainSnackbar" Grid.Row="1" />
                 </Grid>
             </wpf:DialogHost>

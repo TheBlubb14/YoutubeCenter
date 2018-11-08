@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YoutubeCenter.Library.Model;
 using YoutubeCenter.ViewModel;
 
 namespace YoutubeCenter
@@ -32,6 +33,11 @@ namespace YoutubeCenter
         {
             if (this.DataContext is IDisposable disposable)
                 disposable.Dispose();
+        }
+
+        private void ItemsControl_CleanUpVirtualizedItem(object sender, CleanUpVirtualizedItemEventArgs e)
+        {
+            (e.Value as Video)?.Dispose();
         }
     }
 }

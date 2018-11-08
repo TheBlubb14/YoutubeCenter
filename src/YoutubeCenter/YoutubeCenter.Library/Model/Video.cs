@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace YoutubeCenter.Library.Model
 {
-    public class Video : ObservableObject
+    public class Video : ObservableObject, IDisposable
     {
         public string VideoId { get; set; }
         public string Title { get; set; }
@@ -30,10 +30,10 @@ namespace YoutubeCenter.Library.Model
             {
                 isVisible = value;
 
-                //if (isVisible)
-                //    DownloadImage();
-                //else
-                //    Image = null;
+                if (isVisible)
+                    DownloadImage();
+                else
+                    Image = null;
             }
         }
 
@@ -101,6 +101,16 @@ namespace YoutubeCenter.Library.Model
 
             image.Freeze();
             return image;
+        }
+
+        public void Dispose()
+        {
+            this.VideoId = null;
+            this.Title = null;
+            this.Description = null;
+            this.ThumbnailDetails = null;
+            this.PublishedAt = null;
+            this.Image = null;
         }
     }
 }
