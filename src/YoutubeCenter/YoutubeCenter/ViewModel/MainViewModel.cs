@@ -7,14 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using YoutubeCenter.Library;
 using YoutubeCenter.Library.Database;
-using YoutubeCenter.Library.Messaging;
 using YoutubeCenter.Library.Model;
 using YoutubeCenter.Service;
 
@@ -98,7 +93,6 @@ namespace YoutubeCenter.ViewModel
             //result.Add(await YoutubeApi.GetChannelByNameAsync(channelNames[0]));
             //Database.Instance.SaveChannels(result);
 
-
             //var channels = await YoutubeApi.GetChannelsByName(Database.Instance.GetChannels().First().Name);
             try
             {
@@ -160,7 +154,7 @@ namespace YoutubeCenter.ViewModel
             if (SnackbarMessageQueue != null)
             {
                 SnackbarMessageQueue.Enqueue($"error: {exception.Message}", "show more",
-                    () => { SnackbarMessageQueue.Enqueue($"{exception.ToString()}"); });
+                    () => SnackbarMessageQueue.Enqueue($"{exception}"));
             }
             else
             {

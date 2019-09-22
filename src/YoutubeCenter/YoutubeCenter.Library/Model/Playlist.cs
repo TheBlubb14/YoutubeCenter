@@ -1,11 +1,7 @@
 ﻿using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YoutubeCenter.Library.Model
 {
@@ -13,7 +9,7 @@ namespace YoutubeCenter.Library.Model
     {
         public ObservableCollection<Video> Videos { get; set; }
 
-        public string ID { get; private set; }
+        public string ID { get; }
 
         public event EventHandler<YoutubeEventArgs> ErrorOccured;
 

@@ -1,26 +1,14 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Interop;
-using YoutubeCenter.Library;
-using YoutubeCenter.Library.Messaging;
 using YoutubeCenter.Library.Model;
 
 namespace YoutubeCenter.ViewModel
 {
-    public class SettingsViewModel : ViewModelBase, IDisposable
+    public sealed class SettingsViewModel : ViewModelBase, IDisposable
     {
         public ICommand DatabaseBrowseFileCommand { get; set; }
         public ICommand DownloadPathBrowseFolderCommand { get; set; }
@@ -49,7 +37,7 @@ namespace YoutubeCenter.ViewModel
 
         private void DatabaseBrowseFile()
         {
-            var dialog = new SaveFileDialog
+            using var dialog = new SaveFileDialog
             {
                 AddExtension = true,
                 AutoUpgradeEnabled = true,
@@ -67,8 +55,10 @@ namespace YoutubeCenter.ViewModel
 
         private void DownloadPathBrowseFolder()
         {
-            var dialog = new FolderBrowserDialog();
-            dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+            using var dialog = new FolderBrowserDialog
+            {
+                RootFolder = Environment.SpecialFolder.MyComputer
+            };
 
             var result = dialog.ShowDialog(System.Windows.Application.Current.MainWindow.GetIWin32Window());
 

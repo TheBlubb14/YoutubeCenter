@@ -1,17 +1,13 @@
 ﻿using GalaSoft.MvvmLight;
 using Google.Apis.YouTube.v3.Data;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace YoutubeCenter.Library.Model
 {
-    public class Video : ObservableObject, IDisposable
+    public sealed class Video : ObservableObject, IDisposable
     {
         public string VideoId { get; set; }
         public string Title { get; set; }
@@ -75,11 +71,9 @@ namespace YoutubeCenter.Library.Model
             if (string.IsNullOrEmpty(url))
                 return;
 
-            using (var client = new WebClient())
-            {
-                var bytes = await client.DownloadDataTaskAsync(url);
-                this.Image = ConvertToBitmapImage(bytes);
-            }
+            using var client = new WebClient();
+            var bytes = await client.DownloadDataTaskAsync(url);
+            this.Image = ConvertToBitmapImage(bytes);
         }
 
         private BitmapImage ConvertToBitmapImage(byte[] imageData)

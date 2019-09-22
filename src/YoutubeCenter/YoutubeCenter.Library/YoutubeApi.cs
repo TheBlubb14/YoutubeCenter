@@ -1,21 +1,16 @@
 ﻿using Google;
 using Google.Apis.Requests;
-using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace YoutubeCenter.Library
 {
     public class YoutubeApi
     {
-        public string ApiKey { get; private set; }
+        public string ApiKey { get; }
 
         private readonly YouTubeService _service;
 
@@ -110,7 +105,6 @@ namespace YoutubeCenter.Library
             }
         }
 
-
         public async Task<(PlaylistItemListResponse Result, Exception Exception)> GetVideosByChannelAsync(Model.Channel channel, int count = 1)
         {
             try
@@ -128,7 +122,6 @@ namespace YoutubeCenter.Library
                 return (null, ex);
             }
         }
-
 
         internal PlaylistItemsResource.ListRequest CreatePlaylistRequest(int itemCount = 50)
         {

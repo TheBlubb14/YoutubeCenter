@@ -18,15 +18,15 @@ namespace YoutubeCenter.Helper
 
         private static void OnScrollToBottomPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            (obj as ScrollViewer).Loaded += OnScrollViewerLoaded;
+            ((ScrollViewer)obj).Loaded += OnScrollViewerLoaded;
         }
 
         private static void OnScrollViewerLoaded(object sender, RoutedEventArgs e)
         {
-            (sender as ScrollViewer).Loaded -= OnScrollViewerLoaded;
+            ((ScrollViewer)sender).Loaded -= OnScrollViewerLoaded;
 
-            (sender as ScrollViewer).Unloaded += OnScrollViewerUnloaded;
-            (sender as ScrollViewer).ScrollChanged += OnScrollViewerScrollChanged;
+            ((ScrollViewer)sender).Unloaded += OnScrollViewerUnloaded;
+            ((ScrollViewer)sender).ScrollChanged += OnScrollViewerScrollChanged;
         }
 
         private static void OnScrollViewerScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -35,7 +35,7 @@ namespace YoutubeCenter.Helper
             if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight)
             {
                 var command = GetScrollToBottom(sender as ScrollViewer);
-                if (command == null || !command.CanExecute(null))
+                if (command?.CanExecute(null) != true)
                     return;
 
                 command.Execute(null);
@@ -44,8 +44,8 @@ namespace YoutubeCenter.Helper
 
         private static void OnScrollViewerUnloaded(object sender, RoutedEventArgs e)
         {
-            (sender as ScrollViewer).Unloaded -= OnScrollViewerUnloaded;
-            (sender as ScrollViewer).ScrollChanged -= OnScrollViewerScrollChanged;
+            ((ScrollViewer)sender).Unloaded -= OnScrollViewerUnloaded;
+            ((ScrollViewer)sender).ScrollChanged -= OnScrollViewerScrollChanged;
         }
     }
 }

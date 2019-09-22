@@ -2,17 +2,14 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using YoutubeCenter.Library.Model;
 using SQLitePCL;
 
 namespace YoutubeCenter.Library.Database
 {
-    public class Database : IDisposable
+    public sealed class Database : IDisposable
     {
         public static readonly Database Instance = new Database();
 
@@ -88,7 +85,7 @@ namespace YoutubeCenter.Library.Database
                          Description = channel.Description ?? "",
                          BackgroundImageUrl = channel.BackgroundImageUrl ?? "",
                          UploadsPlaylistId = channel.UploadsPlaylistId ?? ""
-                     });
+                     }).ConfigureAwait(false);
 
             return true;
         }
@@ -100,7 +97,7 @@ namespace YoutubeCenter.Library.Database
                 if (channel == null)
                     continue;
 
-                await SaveChannelAsync(channel);
+                await SaveChannelAsync(channel).ConfigureAwait(false);
             }
         }
     }

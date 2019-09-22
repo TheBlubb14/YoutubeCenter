@@ -17,7 +17,7 @@
              d:DataContext="{d:DesignInstance m:Video}"
              d:DesignWidth="640" d:DesignHeight="480">
 
-    <materialDesign:Card Margin="4 4 0 4" Width="360">
+    <materialDesign:Card Margin="4 4 0 4" Width="360" Height="218">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="200"/>
