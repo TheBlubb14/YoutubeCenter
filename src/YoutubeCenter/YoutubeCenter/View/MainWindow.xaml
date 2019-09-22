@@ -39,16 +39,16 @@
                     <ListBox x:Name="NavListBox" Margin="0 16 0 16"                         
                              ItemsSource="{Binding Channels}"
                              SelectedItem="{Binding SelectedChannel}">
-                        <behaviors:Interaction.Triggers>
-                            <behaviors:EventTrigger>
-                                <behaviors:ChangePropertyAction TargetObject="{Binding ElementName=MenuToggleButton}" PropertyName="IsChecked" Value="False"/>
-                            </behaviors:EventTrigger>
-                        </behaviors:Interaction.Triggers>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <Custom:EventToCommand Command="{Binding NavListBoxSelectionChangedCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="SelectionChanged">
+                                <behaviors:ChangePropertyAction TargetObject="{Binding ElementName=MenuToggleButton}" PropertyName="IsChecked" Value="False"/>
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="domain:Channel">
                                 <TextBlock Text="{Binding Title}"/>
