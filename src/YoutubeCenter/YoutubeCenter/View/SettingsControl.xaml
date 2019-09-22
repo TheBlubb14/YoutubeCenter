@@ -24,7 +24,7 @@
             <Custom:EventToCommand Command="{Binding LoadedCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
+
     <DockPanel>
         <Grid DockPanel.Dock="Top" Margin="16" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>

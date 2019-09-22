@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,20 +10,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using YoutubeCenter.ViewModel;
 
 namespace YoutubeCenter
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für SettingsControl.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisposable
+    public partial class SettingsControl : UserControl, IDisposable
     {
-        public MainWindow()
+        public SettingsControl()
         {
             InitializeComponent();
-
-            ((MainViewModel)this.DataContext).SnackbarMessageQueue = MainSnackbar.MessageQueue;
         }
 
         public void Dispose()

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YoutubeCenter.Library.Model;
-
+using SQLitePCL;
 
 namespace YoutubeCenter.Library.Database
 {
@@ -19,6 +19,11 @@ namespace YoutubeCenter.Library.Database
         public bool IsDisposed { get; private set; }
 
         private SqliteConnection Connection;
+
+        static Database()
+        {
+            Batteries.Init();
+        }
 
         private Database()
         {

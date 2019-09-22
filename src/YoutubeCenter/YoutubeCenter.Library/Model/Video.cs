@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace YoutubeCenter.Library.Model
 {
-    public class Video : ObservableObject
+    public class Video : ObservableObject, IDisposable
     {
         public string VideoId { get; set; }
         public string Title { get; set; }
@@ -21,6 +21,21 @@ namespace YoutubeCenter.Library.Model
         public BitmapImage Image { get; set; }
 
 
+        private bool isVisible = false;
+
+        public bool IsVisible
+        {
+            get => isVisible;
+            set
+            {
+                isVisible = value;
+
+                if (isVisible)
+                    DownloadImage();
+                else
+                    Image = null;
+            }
+        }
 
         public Video()
         {
@@ -35,7 +50,7 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = youtubeVideo.Snippet?.Thumbnails;
             this.PublishedAt = youtubeVideo.Snippet?.PublishedAt;
 
-            DownloadImage(youtubeVideo?.Snippet?.Thumbnails?.Maxres?.Url ?? youtubeVideo?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage();
         }
 
         public Video(PlaylistItem playlistItem)
@@ -46,11 +61,17 @@ namespace YoutubeCenter.Library.Model
             this.ThumbnailDetails = playlistItem.Snippet?.Thumbnails;
             this.PublishedAt = playlistItem.Snippet?.PublishedAt;
 
-            DownloadImage(playlistItem?.Snippet?.Thumbnails?.Maxres?.Url ?? playlistItem?.Snippet?.Thumbnails?.Default__?.Url);
+            DownloadImage();
         }
 
-        private async void DownloadImage(string url)
+        private async void DownloadImage()
         {
+            var url = this.ThumbnailDetails?.Maxres?.Url ??
+                this.ThumbnailDetails?.High?.Url ??
+                this.ThumbnailDetails?.Medium?.Url ??
+                this.ThumbnailDetails?.Standard?.Url ??
+                this.ThumbnailDetails?.Default__?.Url;
+
             if (string.IsNullOrEmpty(url))
                 return;
 
@@ -80,6 +101,16 @@ namespace YoutubeCenter.Library.Model
 
             image.Freeze();
             return image;
+        }
+
+        public void Dispose()
+        {
+            this.VideoId = null;
+            this.Title = null;
+            this.Description = null;
+            this.ThumbnailDetails = null;
+            this.PublishedAt = null;
+            this.Image = null;
         }
     }
 }

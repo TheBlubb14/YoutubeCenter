@@ -16,17 +16,17 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              d:DataContext="{d:DesignInstance m:Video}"
              d:DesignWidth="640" d:DesignHeight="480">
-    
-    <materialDesign:Card Margin="4 4 0 4" Width="360">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="200"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
 
-            <Image Grid.Row="0" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Image}"/>
-                
-<!--
+    <materialDesign:Card Margin="4 4 0 4" Width="360">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Image Grid.Row="0" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Image, IsAsync=True}"/>
+
+            <!--
             <Button Grid.Row="0"
                                 Name="Button_Play"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" 
@@ -62,7 +62,7 @@
                     <materialDesign:PackIcon Kind="Download" />
                 </Button>-->
 
-                <TextBlock Grid.Row="1" Text="{Binding Title}" />
-            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding Title}" />
+        </Grid>
     </materialDesign:Card>
 </UserControl>

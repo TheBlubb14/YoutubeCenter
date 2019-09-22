@@ -10,24 +10,31 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YoutubeCenter.Library.Model;
+using YoutubeCenter.ViewModel;
 
 namespace YoutubeCenter
 {
-    /// <summary>
-    /// Interaktionslogik für SettingsWindow.xaml
-    /// </summary>
-    public partial class SettingsControl : UserControl, IDisposable
+    public partial class MainWindow : Window
     {
-        public SettingsControl()
+        public MainWindow()
         {
             InitializeComponent();
+
+            ((MainViewModel)this.DataContext).SnackbarMessageQueue = MainSnackbar.MessageQueue;
         }
 
         public void Dispose()
         {
             if (this.DataContext is IDisposable disposable)
                 disposable.Dispose();
+        }
+
+        private void ItemsControl_CleanUpVirtualizedItem(object sender, CleanUpVirtualizedItemEventArgs e)
+        {
+            (e.Value as Video)?.Dispose();
         }
     }
 }

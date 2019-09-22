@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace YoutubeCenter
 {
-   public static class Extensions
+    public static class Extensions
     {
         public static System.Windows.Forms.IWin32Window GetIWin32Window(this Visual visual)
         {
